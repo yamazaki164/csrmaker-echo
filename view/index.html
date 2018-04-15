@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>CSR Maker</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+    crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+  <header class="navbar navbar-default">
+    <div class="container">
+      <div class="row">
+        <h1>CSR Maker</h1>
+      </div>
+    </div>
+  </header>
+
+  <div class="container" id="app">
+    <div class="row">
+      <form class="form">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-title">秘密鍵</p>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">EncryptCbc (CBCモード)*</label>
+              <div class="col-sm-9">
+                <select class="form-control" required name="encrypt_cbc" v-model="form.encryptCbc">
+                  {{ range .encryptCbcs }}
+                  <option value="{{.}}">{{.}}</option>
+                  {{ end }}
+                </select>
+                <span class="text-danger" v-text="error.encryptCbc"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">KeyBit (キー長)*</label>
+              <div class="col-sm-9">
+                <select class="form-control" required name="key_bit" v-model="form.keyBit">
+                  {{ range .keyBits }}
+                  <option value="{{.}}">{{.}}</option>
+                  {{ end }}
+                </select>
+                <span class="text-danger" v-text="error.keyBit"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">PassPhrase (パスフレーズ)</label>
+              <div class="col-sm-9">
+                <input class="form-control" pattern="[a-zA-Z0-9_-]+" type="password" name="pass_phrase" value="" v-model="form.passPhrase"
+                />
+                <span class="text-danger" v-text="error.passPhrase"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p>実行されるコマンド</p>
+            <pre v-if="form.encryptCbc === 'none'">openssl genrsa [KeyBit]</pre>
+            <pre v-else>openssl genrsa -[EncryptCbc] -passout pass:[PassPhrase] [KeyBit]</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <p class="card-title">ディスティングイッシュネーム</p>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Country (国名)*</label>
+              <div class="col-sm-9">
+                <input class="form-control" required maxlength="2" pattern="[A-Z]{2}" placeholder="JP" type="text" name="country" value=""
+                  v-model="form.country" />
+                <span class="text-danger" v-text="error.country"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">State (都道府県名)*</label>
+              <div class="col-sm-9">
+                <input class="form-control" required maxlength="64" pattern="[a-zA-Z0-9_\-]+" placeholder="Tokyo" type="text" name="state"
+                  value="" v-model="form.state" />
+                <span class="text-danger" v-text="error.state"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Locality (市区町村名)*</label>
+              <div class="col-sm-9">
+                <input class="form-control" required maxlength="128" pattern="[a-zA-Z0-9_\-]+" placeholder="Meguro-Ku" type="text" name="locality"
+                  value="" v-model="form.locality" />
+                <span class="text-danger" v-text="error.locality"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">OrganizationalName (組織名)*</label>
+              <div class="col-sm-9">
+                <input class="form-control" required maxlength="64" pattern="[a-zA-Z0-9_\- ,\.]+" placeholder="oRo Co., Ltd." type="text"
+                  name="organizational_name" value="" v-model="form.organizationalName" />
+                <span class="text-danger" v-text="error.organizationalName"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">OrganizationalUnit (部門名)</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="text" maxlength="64" pattern="[a-zA-Z0-9_\- ,\.]+" placeholder="Communication Design" name="organizational_unit"
+                  value="" v-model="form.organizationalUnit" />
+                <span class="text-danger" v-text="error.organizationalUnit"></span>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">CommonName (コモンネーム)*</label>
+              <div class="col-sm-9">
+                <input class="form-control" required maxlength="64" pattern="[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)+" placeholder="www.oro.com"
+                  type="text" name="common_name" value="" v-model="form.commonName" />
+                <span class="text-danger" v-text="error.commonName"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <p>実行されるコマンド</p>
+            <pre>openssl req -new -sha256 -key [server.key] -subj "/C=[Country]/ST=[State]/L=[Locality]/O=[OrganizationalName]/OU=[OrganizationalUnit]/CN=[CommonName]" -passin pass:[PassPhrase]</pre>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" @click="post">Download</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    var initial = {
+      form: {
+        encryptCbc: "none",
+        keyBit: 2048,
+        passPhrase: "",
+        country: "",
+        state: "",
+        locality: "",
+        organizationalName: "",
+        organizationalUnit: "",
+        commonName: ""
+      },
+      error: {
+        encryptCbc: "",
+        keyBit: "",
+        passPhrase: "",
+        country: "",
+        state: "",
+        locality: "",
+        organizationalName: "",
+        organizationalUnit: "",
+        commonName: ""
+      }
+    }
+    var data = {
+      form: {
+        encryptCbc: "none",
+        keyBit: 2048,
+        passPhrase: "",
+        country: "",
+        state: "",
+        locality: "",
+        organizationalName: "",
+        organizationalUnit: "",
+        commonName: ""
+      },
+      error: {
+        encryptCbc: null,
+        keyBit: null,
+        passPhrase: null,
+        country: null,
+        state: null,
+        locality: null,
+        organizationalName: null,
+        organizationalUnit: null,
+        commonName: null
+      }
+    }
+    var vm = new Vue({
+      el: "#app",
+      data: data,
+      methods: {
+        post: function (event) {
+          this.error = initial.error
+          var postData = this.form
+          axios({
+            method: 'post',
+            url: '/create',
+            data: this.form,
+            responseType: 'arraybuffer'
+          })
+            .then(function (response) {
+              var blobUrl = window.URL.createObjectURL(new Blob([response.data], {
+                type: "application/zip"
+              }))
+              var a = document.createElement("a")
+              document.body.appendChild(a)
+              a.style = "display:none"
+              a.href = blobUrl
+              a.download = "csr-" + postData.commonName + ".zip"
+              a.click()
+            })
+            .catch(function (error) {
+              if (error.response.status == 400) {
+                var e = JSON.parse(new TextDecoder().decode(error.response.data))
+                this.data.error = e
+              }
+            })
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
