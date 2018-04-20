@@ -76,7 +76,7 @@
               <label class="col-sm-3 col-form-label">Country (国名)*</label>
               <div class="col-sm-9">
                 <input class="form-control" required maxlength="2" pattern="[A-Z]{2}" placeholder="JP" type="text" name="country" value=""
-                  v-model="form.country" />
+                  v-model.trim="form.country" />
                 <span class="text-danger" v-text="error.country"></span>
               </div>
             </div>
@@ -85,7 +85,7 @@
               <label class="col-sm-3 col-form-label">State (都道府県名)*</label>
               <div class="col-sm-9">
                 <input class="form-control" required maxlength="64" pattern="[a-zA-Z0-9_\-]+" placeholder="Tokyo" type="text" name="state"
-                  value="" v-model="form.state" />
+                  value="" v-model.trim="form.state" />
                 <span class="text-danger" v-text="error.state"></span>
               </div>
             </div>
@@ -94,7 +94,7 @@
               <label class="col-sm-3 col-form-label">Locality (市区町村名)*</label>
               <div class="col-sm-9">
                 <input class="form-control" required maxlength="128" pattern="[a-zA-Z0-9_\-]+" placeholder="Meguro-Ku" type="text" name="locality"
-                  value="" v-model="form.locality" />
+                  value="" v-model.trim="form.locality" />
                 <span class="text-danger" v-text="error.locality"></span>
               </div>
             </div>
@@ -103,7 +103,7 @@
               <label class="col-sm-3 col-form-label">OrganizationalName (組織名)*</label>
               <div class="col-sm-9">
                 <input class="form-control" required maxlength="64" pattern="[a-zA-Z0-9_\- ,\.]+" placeholder="oRo Co., Ltd." type="text"
-                  name="organizational_name" value="" v-model="form.organizationalName" />
+                  name="organizational_name" value="" v-model.trim="form.organizationalName" />
                 <span class="text-danger" v-text="error.organizationalName"></span>
               </div>
             </div>
@@ -112,7 +112,7 @@
               <label class="col-sm-3 col-form-label">OrganizationalUnit (部門名)</label>
               <div class="col-sm-9">
                 <input class="form-control" type="text" maxlength="64" pattern="[a-zA-Z0-9_\- ,\.]+" placeholder="Communication Design" name="organizational_unit"
-                  value="" v-model="form.organizationalUnit" />
+                  value="" v-model.trim="form.organizationalUnit" />
                 <span class="text-danger" v-text="error.organizationalUnit"></span>
               </div>
             </div>
@@ -121,7 +121,7 @@
               <label class="col-sm-3 col-form-label">CommonName (コモンネーム)*</label>
               <div class="col-sm-9">
                 <input class="form-control" required maxlength="64" pattern="[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+(\.[a-zA-Z0-9_\-]+)+" placeholder="www.oro.com"
-                  type="text" name="common_name" value="" v-model="form.commonName" />
+                  type="text" name="common_name" value="" v-model.trim="form.commonName" />
                 <span class="text-danger" v-text="error.commonName"></span>
               </div>
             </div>

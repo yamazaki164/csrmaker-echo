@@ -2,16 +2,13 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"strconv"
-
-	"github.com/yamazaki164/csrmaker-echo/model"
 )
 
 type openssl struct {
-	csrParam *model.CsrParam
+	csrParam *CsrParam
 	keyFile  string
 	KeyRaw   []byte
 	csrFile  string
@@ -41,7 +38,7 @@ func RemoveTempFile(file string) {
 	}
 }
 
-func NewOpenssl(csrParam *model.CsrParam) *openssl {
+func NewOpenssl(csrParam *CsrParam) *openssl {
 	o := &openssl{
 		csrParam: csrParam,
 		keyFile:  CreateTempFile("key"),
@@ -75,7 +72,7 @@ func (o *openssl) GenrsaCommandOpt() []string {
 		o.keyFile,
 	}
 
-	if o.csrParam.EncryptCbc != model.Enctype_none {
+	if o.csrParam.EncryptCbc != Enctype_none {
 		opt = append(opt, []string{
 			"-" + o.csrParam.EncryptCbc,
 			"-passout",
@@ -89,8 +86,7 @@ func (o *openssl) GenrsaCommandOpt() []string {
 }
 
 func (o *openssl) GenerateKey() {
-	ret, err := exec.Command(opensslCmd(), o.GenrsaCommandOpt()...).CombinedOutput()
-	log.Println(ret)
+	_, err := exec.Command(opensslCmd(), o.GenrsaCommandOpt()...).CombinedOutput()
 	if err != nil {
 		panic(err)
 	}
@@ -119,7 +115,7 @@ func (o *openssl) ReqNewCommandOpt() []string {
 		o.subj(),
 	}
 
-	if o.csrParam.EncryptCbc != model.Enctype_none {
+	if o.csrParam.EncryptCbc != Enctype_none {
 		opt = append(opt, []string{"-passin", "pass:" + o.csrParam.PassPhrase}...)
 	}
 
@@ -129,8 +125,7 @@ func (o *openssl) ReqNewCommandOpt() []string {
 }
 
 func (o *openssl) GenerateCsr() {
-	ret, err := exec.Command(opensslCmd(), o.ReqNewCommandOpt()...).CombinedOutput()
-	log.Println(ret)
+	_, err := exec.Command(opensslCmd(), o.ReqNewCommandOpt()...).CombinedOutput()
 	if err != nil {
 		panic(err)
 	}

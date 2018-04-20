@@ -1,4 +1,4 @@
-package model
+package main
 
 import (
 	"testing"
@@ -15,7 +15,7 @@ func TestValidate(t *testing.T) {
 		OrganizationalName: "test",
 		CommonName:         "example.com",
 	}
-	
+
 	if v1, e1 := p1.Validate(); !v1 {
 		t.Error(e1)
 	}
@@ -30,7 +30,7 @@ func TestValidate(t *testing.T) {
 		OrganizationalName: "test",
 		CommonName:         "example.com",
 	}
-	
+
 	if v2, e2 := p2.Validate(); v2 {
 		t.Errorf("has error on empty PassPhrase")
 		t.Error(e2)
@@ -46,7 +46,7 @@ func TestValidate(t *testing.T) {
 		OrganizationalName: "test",
 		CommonName:         "example.com",
 	}
-	
+
 	if v3, e3 := p3.Validate(); !v3 {
 		t.Error(e3)
 	}
@@ -64,12 +64,12 @@ func TestKeyBitOfValidate(t *testing.T) {
 		OrganizationalName: "test",
 		CommonName:         "example.com",
 	}
-	
+
 	v1, e1 := p1.Validate()
 	if v1 {
 		t.Errorf("has no error")
 	}
-	
+
 	if e1.KeyBit != message {
 		t.Errorf("KeyBit validation error")
 	}
@@ -85,7 +85,7 @@ func TestKeyBitOfValidate(t *testing.T) {
 		CommonName:         "example.com",
 	}
 	v2, e2 := p2.Validate()
-	
+
 	if !v2 {
 		t.Error(e2)
 	}

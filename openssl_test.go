@@ -3,8 +3,6 @@ package main
 import (
 	"os"
 	"testing"
-
-	"github.com/yamazaki164/csrmaker-echo/model"
 )
 
 func beforeTest() {
@@ -13,8 +11,8 @@ func beforeTest() {
 	}
 }
 
-func dummyCsr() model.CsrParam {
-	p := model.CsrParam{
+func dummyCsr() CsrParam {
+	p := CsrParam{
 		EncryptCbc:         "des3",
 		KeyBit:             2048,
 		PassPhrase:         "test",
