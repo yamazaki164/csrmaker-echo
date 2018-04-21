@@ -28,14 +28,23 @@ func createHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, errors)
 	}
 
-	s := NewOpenssl(csr)
+	s := NewOpenSsl(csr)
 	pass := ""
 	if csr.EncryptCbc != Enctype_none {
 		pass = csr.PassPhrase
 	}
+	KeyRaw, e := s.GeneratePrivateKey()
+	if e != nil {
+		return c.JSON(http.StatusInternalServerError, e)
+	}
+	CsrRaw, e := s.GenerateCsr()
+	if e != nil {
+		return c.JSON(http.StatusInternalServerError, e)
+	}
+
 	files := map[string][]byte{
-		"key.txt":  s.KeyRaw,
-		"csr.txt":  s.CsrRaw,
+		"key.txt":  KeyRaw,
+		"csr.txt":  CsrRaw,
 		"pass.txt": []byte(pass),
 	}
 	ac := NewArchive(files)

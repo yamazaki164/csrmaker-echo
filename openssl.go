@@ -1,140 +1,89 @@
 package main
 
 import (
-	"io/ioutil"
-	"os"
-	"os/exec"
-	"strconv"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/pem"
+	"errors"
 )
 
-type openssl struct {
-	csrParam *CsrParam
-	keyFile  string
-	KeyRaw   []byte
-	csrFile  string
-	CsrRaw   []byte
+type OpenSsl struct {
+	Csr *CsrParam
+	Key *rsa.PrivateKey
+	MarshalPKCS1PrivateKey []byte
 }
 
-func opensslCmd() string {
-	return config.Cmd
-}
-
-func tmpPath() string {
-	return os.TempDir()
-}
-
-func CreateTempFile(prefix string) string {
-	tmpfile, err := ioutil.TempFile(tmpPath(), prefix)
-	if err != nil {
-		panic(err)
-	}
-	defer tmpfile.Close()
-	return tmpfile.Name()
-}
-
-func RemoveTempFile(file string) {
-	if err := os.Remove(file); err != nil {
-		panic(err)
-	}
-}
-
-func NewOpenssl(csrParam *CsrParam) *openssl {
-	o := &openssl{
-		csrParam: csrParam,
-		keyFile:  CreateTempFile("key"),
-		csrFile:  CreateTempFile("csr"),
-	}
-
-	o.GenerateKey()
-	o.GenerateCsr()
-
-	defer o.RemoveCsrFile()
-	defer o.RemoveKeyFile()
-
-	o.SetKeyRaw()
-	o.SetCsrRaw()
-
-	return o
-}
-
-func (o *openssl) RemoveKeyFile() {
-	RemoveTempFile(o.keyFile)
-}
-
-func (o *openssl) RemoveCsrFile() {
-	RemoveTempFile(o.csrFile)
-}
-
-func (o *openssl) GenrsaCommandOpt() []string {
-	opt := []string{
-		"genrsa",
-		"-out",
-		o.keyFile,
-	}
-
-	if o.csrParam.EncryptCbc != Enctype_none {
-		opt = append(opt, []string{
-			"-" + o.csrParam.EncryptCbc,
-			"-passout",
-			"pass:" + o.csrParam.PassPhrase,
-		}...)
-	}
-
-	opt = append(opt, strconv.FormatUint(uint64(o.csrParam.KeyBit), 10))
-
-	return opt
-}
-
-func (o *openssl) GenerateKey() {
-	_, err := exec.Command(opensslCmd(), o.GenrsaCommandOpt()...).CombinedOutput()
-	if err != nil {
-		panic(err)
-	}
-}
-
-func (o *openssl) SetKeyRaw() {
+func (x *OpenSsl) GeneratePrivateKey() ([]byte, error) {
 	var err error
-	o.KeyRaw, err = ioutil.ReadFile(o.keyFile)
+	x.Key, err = rsa.GenerateKey(rand.Reader, int(x.Csr.KeyBit))
 	if err != nil {
-		panic(err)
-	}
-}
-
-func (o *openssl) subj() string {
-	return "/C=" + o.csrParam.Country + "/ST=" + o.csrParam.State + "/L=" + o.csrParam.Locality + "/O=" + o.csrParam.OrganizationalName + "/OU=" + o.csrParam.OrganizationalUnit + "/CN=" + o.csrParam.CommonName
-}
-
-func (o *openssl) ReqNewCommandOpt() []string {
-	opt := []string{
-		"req",
-		"-new",
-		"-sha256",
-		"-key",
-		o.keyFile,
-		"-subj",
-		o.subj(),
+		return nil, err
 	}
 
-	if o.csrParam.EncryptCbc != Enctype_none {
-		opt = append(opt, []string{"-passin", "pass:" + o.csrParam.PassPhrase}...)
+	x.MarshalPKCS1PrivateKey = x509.MarshalPKCS1PrivateKey(x.Key)
+	block := &pem.Block{
+		Type: "RSA PRIVATE KEY",
+		Bytes: x.MarshalPKCS1PrivateKey,
 	}
 
-	opt = append(opt, []string{"-out", o.csrFile}...)
+	if x.Csr.EncryptCbc == Enctype_none {
+		return pem.EncodeToMemory(block), nil
+	}
 
-	return opt
-}
+	pass := []byte(x.Csr.PassPhrase)
+	switch x.Csr.EncryptCbc {
+		case Enctype_aes128:
+			block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipherAES128)
+		case Enctype_aes192:
+			block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipherAES192)
+		case Enctype_aes256:
+			block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipherAES256)
+		case Enctype_des3:
+			block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipher3DES)
+		default:
+			err = errors.New("Encrypt CBC is not allowed")
+	}
 
-func (o *openssl) GenerateCsr() {
-	_, err := exec.Command(opensslCmd(), o.ReqNewCommandOpt()...).CombinedOutput()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
+
+	return pem.EncodeToMemory(block), nil
 }
 
-func (o *openssl) SetCsrRaw() {
-	var err error
-	o.CsrRaw, err = ioutil.ReadFile(o.csrFile)
-	if err != nil {
-		panic(err)
+func (x *OpenSsl) GenerateCsr() ([]byte, error) {
+	data := &x509.CertificateRequest{
+		Subject: pkix.Name {
+			Country: []string{x.Csr.Country},
+			Province: []string{x.Csr.State},
+			Locality: []string{x.Csr.Locality},
+			Organization: []string{x.Csr.OrganizationalName},
+			OrganizationalUnit: []string{x.Csr.OrganizationalUnit},
+			CommonName: x.Csr.CommonName,
+		},
+		SignatureAlgorithm: x509.SHA256WithRSA,
+		Signature: x.MarshalPKCS1PrivateKey,
 	}
+
+	csr, err := x509.CreateCertificateRequest(rand.Reader, data, x.Key)
+	if err != nil {
+		return nil, err
+	}
+
+	block := &pem.Block {
+		Type: "CERTIFICATE REQUEST",
+		Bytes: csr,
+	}
+
+	return pem.EncodeToMemory(block), nil
+}
+
+func NewOpenSsl(param *CsrParam) *OpenSsl {
+	s := &OpenSsl{
+		Csr: param,
+	}
+
+	return s
 }

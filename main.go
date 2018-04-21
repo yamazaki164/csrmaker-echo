@@ -11,7 +11,6 @@ type TemplateRenderer struct {
 	templates *template.Template
 }
 
-var config *Config
 var e *echo.Echo
 
 // Render renders a template document
@@ -30,7 +29,6 @@ func main() {
 	e.Renderer = &TemplateRenderer{
 		templates: template.Must(template.ParseGlob("view/*.html")),
 	}
-	config = NewConfig()
 
 	e.GET("/", indexHandler)
 	e.POST("/create", createHandler)
