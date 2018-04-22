@@ -7,7 +7,7 @@ import (
 
 func TestGeneratePrivateKey(t *testing.T) {
 	ssl := &OpenSsl{
-		Csr: &CsrParam {
+		Csr: &CsrParam{
 			KeyBit:             2048,
 			EncryptCbc:         "aes128",
 			PassPhrase:         "test",
@@ -84,7 +84,7 @@ func TestGeneratePrivateKey(t *testing.T) {
 
 func TestGenerateCsr(t *testing.T) {
 	ssl := &OpenSsl{
-		Csr: &CsrParam {
+		Csr: &CsrParam{
 			KeyBit:             2048,
 			EncryptCbc:         "aes128",
 			PassPhrase:         "test",
@@ -104,7 +104,7 @@ func TestGenerateCsr(t *testing.T) {
 }
 
 func TestNewOpenSsl(t *testing.T) {
-	csr := &CsrParam {
+	csr := &CsrParam{
 		KeyBit:             2048,
 		EncryptCbc:         "aes128",
 		PassPhrase:         "test",

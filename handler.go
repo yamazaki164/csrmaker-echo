@@ -24,8 +24,8 @@ func createHandler(c echo.Context) error {
 	}
 
 	//validation
-	if isValid, errors := csr.Validate(); !isValid {
-		return c.JSON(http.StatusBadRequest, errors)
+	if isValid, err := csr.Validate(); !isValid {
+		return c.JSON(http.StatusBadRequest, err)
 	}
 
 	s := NewOpenSsl(csr)
@@ -33,13 +33,13 @@ func createHandler(c echo.Context) error {
 	if csr.EncryptCbc != Enctype_none {
 		pass = csr.PassPhrase
 	}
-	KeyRaw, e := s.GeneratePrivateKey()
-	if e != nil {
-		return c.JSON(http.StatusInternalServerError, e)
+	KeyRaw, err := s.GeneratePrivateKey()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
 	}
-	CsrRaw, e := s.GenerateCsr()
-	if e != nil {
-		return c.JSON(http.StatusInternalServerError, e)
+	CsrRaw, err := s.GenerateCsr()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
 	}
 
 	files := map[string][]byte{

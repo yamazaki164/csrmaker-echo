@@ -10,8 +10,8 @@ import (
 )
 
 type OpenSsl struct {
-	Csr *CsrParam
-	Key *rsa.PrivateKey
+	Csr                    *CsrParam
+	Key                    *rsa.PrivateKey
 	MarshalPKCS1PrivateKey []byte
 }
 
@@ -24,7 +24,7 @@ func (x *OpenSsl) GeneratePrivateKey() ([]byte, error) {
 
 	x.MarshalPKCS1PrivateKey = x509.MarshalPKCS1PrivateKey(x.Key)
 	block := &pem.Block{
-		Type: "RSA PRIVATE KEY",
+		Type:  "RSA PRIVATE KEY",
 		Bytes: x.MarshalPKCS1PrivateKey,
 	}
 
@@ -34,16 +34,16 @@ func (x *OpenSsl) GeneratePrivateKey() ([]byte, error) {
 
 	pass := []byte(x.Csr.PassPhrase)
 	switch x.Csr.EncryptCbc {
-		case Enctype_aes128:
-			block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipherAES128)
-		case Enctype_aes192:
-			block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipherAES192)
-		case Enctype_aes256:
-			block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipherAES256)
-		case Enctype_des3:
-			block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipher3DES)
-		default:
-			err = errors.New("Encrypt CBC is not allowed")
+	case Enctype_aes128:
+		block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipherAES128)
+	case Enctype_aes192:
+		block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipherAES192)
+	case Enctype_aes256:
+		block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipherAES256)
+	case Enctype_des3:
+		block, err = x509.EncryptPEMBlock(rand.Reader, block.Type, block.Bytes, pass, x509.PEMCipher3DES)
+	default:
+		err = errors.New("Encrypt CBC is not allowed")
 	}
 
 	if err != nil {
@@ -55,16 +55,16 @@ func (x *OpenSsl) GeneratePrivateKey() ([]byte, error) {
 
 func (x *OpenSsl) GenerateCsr() ([]byte, error) {
 	data := &x509.CertificateRequest{
-		Subject: pkix.Name {
-			Country: []string{x.Csr.Country},
-			Province: []string{x.Csr.State},
-			Locality: []string{x.Csr.Locality},
-			Organization: []string{x.Csr.OrganizationalName},
+		Subject: pkix.Name{
+			Country:            []string{x.Csr.Country},
+			Province:           []string{x.Csr.State},
+			Locality:           []string{x.Csr.Locality},
+			Organization:       []string{x.Csr.OrganizationalName},
 			OrganizationalUnit: []string{x.Csr.OrganizationalUnit},
-			CommonName: x.Csr.CommonName,
+			CommonName:         x.Csr.CommonName,
 		},
 		SignatureAlgorithm: x509.SHA256WithRSA,
-		Signature: x.MarshalPKCS1PrivateKey,
+		Signature:          x.MarshalPKCS1PrivateKey,
 	}
 
 	csr, err := x509.CreateCertificateRequest(rand.Reader, data, x.Key)
@@ -72,8 +72,8 @@ func (x *OpenSsl) GenerateCsr() ([]byte, error) {
 		return nil, err
 	}
 
-	block := &pem.Block {
-		Type: "CERTIFICATE REQUEST",
+	block := &pem.Block{
+		Type:  "CERTIFICATE REQUEST",
 		Bytes: csr,
 	}
 
