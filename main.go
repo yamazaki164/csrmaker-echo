@@ -24,7 +24,7 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
-func main() {
+func newApp() {
 	e = echo.New()
 	e.Renderer = &TemplateRenderer{
 		templates: template.Must(template.ParseGlob("view/*.html")),
@@ -34,5 +34,9 @@ func main() {
 	e.POST("/create", createHandler)
 	e.GET("/checker", checkerHandler)
 	e.POST("/checker", doCheckHandler)
+}
+
+func main() {
+	newApp()
 	e.Logger.Fatal(e.Start(":9000"))
 }
