@@ -52,3 +52,30 @@ func createHandler(c echo.Context) error {
 
 	return c.JSONBlob(http.StatusOK, ac.Buffer.Bytes())
 }
+
+func checkerHandler(c echo.Context) error {
+	return c.Render(http.StatusOK, "checker.html", nil)
+}
+
+func doCheckHandler(c echo.Context) error {
+	data := &Decoder{}
+	if err := c.Bind(data); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	x, err := data.Decode()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	csr := &CsrParam{
+		Country:            x.Subject.Country[0],
+		State:              x.Subject.Province[0],
+		Locality:           x.Subject.Locality[0],
+		OrganizationalName: x.Subject.Organization[0],
+		OrganizationalUnit: x.Subject.OrganizationalUnit[0],
+		CommonName:         x.Subject.CommonName,
+	}
+
+	return c.JSON(http.StatusOK, csr)
+}

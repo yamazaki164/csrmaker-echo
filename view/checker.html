@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>CSR Checker</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+    crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+  <header class="">
+    <nav class="navbar bg-dark">
+      <ul class="nav justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Generator</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Checker</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container" id="app">
+    <div class="row">
+      <form class="col-sm form">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-title">CSR</p>
+
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <textarea class="form-control" name="csr" v-model="form.csr" cols="90" rows="10"></textarea>
+                <span class="text-danger" v-text="error"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" @click="post">Check</button>
+      </form>
+    </div>
+
+    <div class="row">
+      <div class="col-sm">
+        <div class="card" v-if="showCsr()">
+          <div class="card-body">
+            <p class="card-title">ディスティングイッシュネーム</p>
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">Country (国名)</label>
+              <div class="col-sm-8" v-text="csr.country"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">State (都道府県名)</label>
+              <div class="col-sm-8" v-text="csr.state"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">Locality (市区町村名)</label>
+              <div class="col-sm-8" v-text="csr.locality"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">OrganizationalName (組織名)</label>
+              <div class="col-sm-8" v-text="csr.organizationalName"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">OrganizationalUnit (部門名)</label>
+              <div class="col-sm-8" v-text="csr.organizationalUnit"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">CommonName (コモンネーム)</label>
+              <div class="col-sm-8" v-text="csr.commonName"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var initial = {
+      form: {
+        csr: "",
+      },
+      csr: {
+        country: "",
+        state: "",
+        locality: "",
+        organizationalName: "",
+        organizationalUnit: "",
+        commonName: ""
+      },
+      error: ""
+    }
+    var data = {
+      form: {
+        csr: "",
+      },
+      csr: {
+        country: "",
+        state: "",
+        locality: "",
+        organizationalName: "",
+        organizationalUnit: "",
+        commonName: ""
+      },
+      error: ""
+    }
+    var vm = new Vue({
+      el: "#app",
+      data: data,
+      methods: {
+        showCsr: function () {
+          return this.error === '' && this.csr.country !== ''
+        },
+        post: function (event) {
+          this.error = initial.error
+          this.csr = initial.csr
+          var postData = this.form
+          axios({
+            method: 'post',
+            url: '/checker',
+            data: this.form
+          })
+            .then(function (response) {
+              this.data.csr = response.data
+            })
+            .catch(function (error) {
+              if (error.response.status == 400) {
+                this.data.error = error.response.data.error
+              }
+            })
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

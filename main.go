@@ -32,5 +32,7 @@ func main() {
 
 	e.GET("/", indexHandler)
 	e.POST("/create", createHandler)
+	e.GET("/checker", checkerHandler)
+	e.POST("/checker", doCheckHandler)
 	e.Logger.Fatal(e.Start(":9000"))
 }

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>CSR Maker</title>
+  <title>CSR Generator</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
@@ -13,17 +13,22 @@
 
 <body>
 
-  <header class="navbar navbar-default">
-    <div class="container">
-      <div class="row">
-        <h1>CSR Maker</h1>
-      </div>
-    </div>
+  <header class="">
+    <nav class="navbar bg-dark">
+      <ul class="nav justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Generator</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/checker">Checker</a>
+        </li>
+      </ul>
+    </nav>
   </header>
 
   <div class="container" id="app">
     <div class="row">
-      <form class="form">
+      <form class="col-sm form">
         <div class="card">
           <div class="card-body">
             <p class="card-title">秘密鍵</p>
@@ -52,7 +57,7 @@
             </div>
 
             <div class="form-group row" v-if="form.encryptCbc !== 'none'">
-              <label class="col-sm-3 col-form-label">PassPhrase (パスフレーズ)</label>
+              <label class="col-sm-3 col-form-label">PassPhrase (パスフレーズ)*</label>
               <div class="col-sm-9">
                 <input class="form-control" pattern="[a-zA-Z0-9_-]+" type="password" name="pass_phrase" value="" v-model="form.passPhrase"
                 />
@@ -63,7 +68,7 @@
         </div>
         <div class="card">
           <div class="card-body">
-            <p>実行されるコマンド</p>
+            <p>OpenSSLコマンド</p>
             <pre v-if="form.encryptCbc === 'none'">openssl genrsa [KeyBit]</pre>
             <pre v-else>openssl genrsa -[EncryptCbc] -passout pass:[PassPhrase] [KeyBit]</pre>
           </div>
@@ -129,7 +134,7 @@
         </div>
         <div class="card">
           <div class="card-body">
-            <p>実行されるコマンド</p>
+            <p>OpenSSLコマンド</p>
             <pre>openssl req -new -sha256 -key [server.key] -subj "/C=[Country]/ST=[State]/L=[Locality]/O=[OrganizationalName]/OU=[OrganizationalUnit]/CN=[CommonName]" -passin pass:[PassPhrase]</pre>
           </div>
         </div>
