@@ -47,7 +47,7 @@
             <div class="form-group row">
               <label class="col-sm-3 col-form-label">KeyBit (キー長)*</label>
               <div class="col-sm-9">
-                <select class="form-control" required name="key_bit" v-model="form.keyBit">
+                <select class="form-control" required name="key_bit" v-model.number="form.keyBit">
                   {{ range .keyBits }}
                   <option value="{{.}}">{{.}}</option>
                   {{ end }}
