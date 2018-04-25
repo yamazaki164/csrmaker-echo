@@ -7,15 +7,15 @@ import (
 	"errors"
 )
 
-type Decoder struct {
+type CsrDecoder struct {
 	Csr string `json:"csr" form:"csr"`
 }
 
-func (d *Decoder) Decode() (*x509.CertificateRequest, error) {
+func (d *CsrDecoder) Decode() (*x509.CertificateRequest, error) {
 	b := bytes.NewBufferString(d.Csr)
 	p, _ := pem.Decode(b.Bytes())
 	if p == nil {
-		return nil, errors.New("Csr decode error")
+		return nil, errors.New("CSR decode error")
 	}
 
 	return x509.ParseCertificateRequest(p.Bytes)

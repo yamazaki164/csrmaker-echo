@@ -20,7 +20,10 @@
           <a class="nav-link" href="/">Generator</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="#">Checker</a>
+          <a class="nav-link active" href="#">CSR Checker</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/ssl/checker">Certificate Checker</a>
         </li>
       </ul>
     </nav>
@@ -35,7 +38,7 @@
 
             <div class="form-group row">
               <div class="col-sm-12">
-                <textarea class="form-control" name="csr" v-model="form.csr" cols="90" rows="10"></textarea>
+                <textarea class="form-control" name="csr" v-model="form.csr" cols="90" rows="10" placeholder="-----BEGIN CERTIFICATE REQUEST-----"></textarea>
                 <span class="text-danger" v-text="error"></span>
               </div>
             </div>
@@ -128,8 +131,8 @@
           var postData = this.form
           axios({
             method: 'post',
-            url: '/checker',
-            data: this.form
+            url: '/csr/checker',
+            data: postData
           })
             .then(function (response) {
               this.data.csr = response.data

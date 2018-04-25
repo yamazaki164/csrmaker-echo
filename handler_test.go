@@ -89,48 +89,48 @@ func TestCreateHandlerWithValidParam(t *testing.T) {
 	}
 }
 
-func TestCheckerHandler(t *testing.T) {
+func TestCsrCheckerHandler(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(echo.GET, "/checker", nil)
+	req := httptest.NewRequest(echo.GET, "/csr/checker", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/checker")
+	c.SetPath("/csr-checker")
 
-	checkerHandler(c)
+	csrCheckerHandler(c)
 }
 
-func TestDoCheckHandlerWithEmptyParam(t *testing.T) {
+func TestDoCsrCheckHandlerWithEmptyParam(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(echo.POST, "/checker", nil)
+	req := httptest.NewRequest(echo.POST, "/csr/checker", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/checker")
+	c.SetPath("/csr/checker")
 
-	doCheckHandler(c)
+	doCsrCheckHandler(c)
 	if rec.Result().StatusCode != http.StatusBadRequest {
 		t.Error("bad status code on empty params")
 	}
 }
 
-func TestDoCheckHandlerWithInvalidParam(t *testing.T) {
+func TestDoCsrCheckHandlerWithInvalidParam(t *testing.T) {
 	e := echo.New()
 	param := make(url.Values)
 	param.Set("csr", "abc")
 
-	req := httptest.NewRequest(echo.POST, "/checker", strings.NewReader(param.Encode()))
+	req := httptest.NewRequest(echo.POST, "/csr/checker", strings.NewReader(param.Encode()))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/checker")
+	c.SetPath("/csr/checker")
 
-	doCheckHandler(c)
+	doCsrCheckHandler(c)
 	if rec.Result().StatusCode != http.StatusBadRequest {
 		t.Error("bad status code on invalid params")
 	}
 }
 
-func TestDoCheckHandlerWithValidParam(t *testing.T) {
+func TestDoCsrCheckHandlerWithValidParam(t *testing.T) {
 	e := echo.New()
 	param := make(url.Values)
 	param.Set("csr", `-----BEGIN CERTIFICATE REQUEST-----
@@ -151,14 +151,14 @@ STNvqhZTfhd9osOl4SXd+dF3/g2mrvTSM0y/iSEtfK8cQbXA3shOsPSu36ARJB9v
 CDrKx9V2DqJC
 -----END CERTIFICATE REQUEST-----`)
 
-	req := httptest.NewRequest(echo.POST, "/checker", strings.NewReader(param.Encode()))
+	req := httptest.NewRequest(echo.POST, "/csr/checker", strings.NewReader(param.Encode()))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/checker")
+	c.SetPath("/csr/checker")
 
-	doCheckHandler(c)
+	doCsrCheckHandler(c)
 	if rec.Result().StatusCode != http.StatusOK {
 		t.Error("bad status code on valid params")
 	}

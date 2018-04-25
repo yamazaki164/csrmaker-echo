@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestDecode(t *testing.T) {
-	data1 := &Decoder{
+func TestCsrDecode(t *testing.T) {
+	data1 := &CsrDecoder{
 		Csr: "bad data",
 	}
 
@@ -13,14 +13,14 @@ func TestDecode(t *testing.T) {
 	if err1 == nil {
 		t.Error("decode fail error")
 	}
-	if err1.Error() != "Csr decode error" {
+	if err1.Error() != "CSR decode error" {
 		t.Error("decode error message is invalid")
 	}
 	if test1 != nil {
 		t.Error("return value error on decode error statement")
 	}
 
-	data2 := &Decoder{
+	data2 := &CsrDecoder{
 		Csr: `-----BEGIN CERTIFICATE REQUEST-----
 MIICpTCCAY0CAQAwYDELMAkGA1UEBhMCSlAxDjAMBgNVBAgTBVRva3lvMRIwEAYD
 VQQHEwlNZWd1cm8tS3UxDDAKBgNVBAoTA29ybzEJMAcGA1UECxMAMRQwEgYDVQQD

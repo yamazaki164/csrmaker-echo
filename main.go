@@ -32,8 +32,14 @@ func newApp() {
 
 	e.GET("/", indexHandler)
 	e.POST("/create", createHandler)
-	e.GET("/checker", checkerHandler)
-	e.POST("/checker", doCheckHandler)
+
+	g1 := e.Group("/csr")
+	g1.GET("/checker", csrCheckerHandler)
+	g1.POST("/checker", doCsrCheckHandler)
+
+	g2 := e.Group("/ssl")
+	g2.GET("/checker", sslCheckerHandler)
+	g2.POST("/checker", doSslCheckHandler)
 }
 
 func main() {
