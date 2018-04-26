@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/x509/pkix"
 	"regexp"
 )
 
@@ -37,6 +38,19 @@ type CsrParam struct {
 	OrganizationalName string `json:"organizationalName" form:"organizationalName"`
 	OrganizationalUnit string `json:"organizationalUnit" form:"organizationalUnit"`
 	CommonName         string `json:"commonName" form:"commonName"`
+}
+
+func NewCsrParamFromPkixName(x *pkix.Name) *CsrParam {
+	csr := &CsrParam{
+		Country:            x.Country[0],
+		State:              x.Province[0],
+		Locality:           x.Locality[0],
+		OrganizationalName: x.Organization[0],
+		OrganizationalUnit: x.OrganizationalUnit[0],
+		CommonName:         x.CommonName,
+	}
+
+	return csr
 }
 
 type CsrErrors struct {

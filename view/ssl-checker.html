@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Certificate Checker</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+  <script src="/assets/js/vue.js"></script>
+  <script src="/assets/js/axios.min.js"></script>
+</head>
+
+<body>
+
+  <header class="">
+    <nav class="navbar bg-dark">
+      <ul class="nav justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Generator</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/csr/checker">CSR Checker</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Certificate Checker</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container" id="app">
+    <div class="row">
+      <form class="col-sm form">
+        <div class="card">
+          <div class="card-body">
+            <p class="card-title">Certificate</p>
+
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <textarea class="form-control" name="certificate" v-model="form.certificate" cols="90" rows="10" placeholder="-----BEGIN CERTIFICATE-----"></textarea>
+                <span class="text-danger" v-text="error"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" @click="post">Check</button>
+      </form>
+    </div>
+
+    <div class="row">
+      <div class="col-sm">
+        <div class="card" v-if="showCertificate()">
+          <div class="card-body">
+            <p class="card-title">Subject</p>
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">Country (国名)</label>
+              <div class="col-sm-8" v-text="certificate.subject.country"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">State (都道府県名)</label>
+              <div class="col-sm-8" v-text="certificate.subject.state"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">Locality (市区町村名)</label>
+              <div class="col-sm-8" v-text="certificate.subject.locality"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">OrganizationalName (組織名)</label>
+              <div class="col-sm-8" v-text="certificate.subject.organizationalName"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">OrganizationalUnit (部門名)</label>
+              <div class="col-sm-8" v-text="certificate.subject.organizationalUnit"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">CommonName (コモンネーム)</label>
+              <div class="col-sm-8" v-text="certificate.subject.commonName"></div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <p class="card-title">Expires</p>
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">NotBefore</label>
+              <div class="col-sm-8" v-text="certificate.notBefore"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">NotAfter</label>
+              <div class="col-sm-8" v-text="certificate.notAfter"></div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <p class="card-title">Issue</p>
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">Country (国名)</label>
+              <div class="col-sm-8" v-text="certificate.issuer.country"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">OrganizationalName (組織名)</label>
+              <div class="col-sm-8" v-text="certificate.issuer.organizationalName"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">CommonName (コモンネーム)</label>
+              <div class="col-sm-8" v-text="certificate.issuer.commonName"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var initial = {
+      form: {
+        certificate: "",
+      },
+      certificate: {
+        issuer: {
+          country: "",
+          organizationalName: "",
+          commonName: ""
+        },
+        subject: {
+          country: "",
+          state: "",
+          locality: "",
+          organizationalName: "",
+          organizationalUnit: "",
+          commonName: ""
+        },
+        notAfter: "",
+        notBefore: ""
+      },
+      error: ""
+    }
+    var data = {
+      form: {
+        certificate: "",
+      },
+      certificate: {
+        issuer: {
+          country: "",
+          organizationalName: "",
+          organizationalUnit: "",
+          commonName: ""
+        },
+        subject: {
+          country: "",
+          state: "",
+          locality: "",
+          organizationalName: "",
+          organizationalUnit: "",
+          commonName: ""
+        },
+        notAfter: "",
+        notBefore: ""
+      },
+      error: ""
+    }
+    var vm = new Vue({
+      el: "#app",
+      data: data,
+      methods: {
+        showCertificate: function () {
+          return this.error === '' && this.certificate.notAfter !== ''
+        },
+        post: function (event) {
+          this.error = initial.error
+          this.certificate = initial.certificate
+          var postData = this.form
+          axios({
+            method: 'post',
+            url: '/ssl/checker',
+            data: postData
+          })
+            .then(function (response) {
+              this.data.certificate = response.data
+            })
+            .catch(function (error) {
+              if (error.response.status == 400) {
+                this.data.error = error.response.data.error
+              }
+            })
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

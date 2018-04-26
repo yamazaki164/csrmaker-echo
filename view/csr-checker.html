@@ -5,10 +5,9 @@
   <title>CSR Checker</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-    crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+  <script src="/assets/js/vue.js"></script>
+  <script src="/assets/js/axios.min.js"></script>
 </head>
 
 <body>
@@ -20,7 +19,10 @@
           <a class="nav-link" href="/">Generator</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="#">Checker</a>
+          <a class="nav-link active" href="#">CSR Checker</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/ssl/checker">Certificate Checker</a>
         </li>
       </ul>
     </nav>
@@ -35,7 +37,7 @@
 
             <div class="form-group row">
               <div class="col-sm-12">
-                <textarea class="form-control" name="csr" v-model="form.csr" cols="90" rows="10"></textarea>
+                <textarea class="form-control" name="csr" v-model="form.csr" cols="90" rows="10" placeholder="-----BEGIN CERTIFICATE REQUEST-----"></textarea>
                 <span class="text-danger" v-text="error"></span>
               </div>
             </div>
@@ -128,8 +130,8 @@
           var postData = this.form
           axios({
             method: 'post',
-            url: '/checker',
-            data: this.form
+            url: '/csr/checker',
+            data: postData
           })
             .then(function (response) {
               this.data.csr = response.data

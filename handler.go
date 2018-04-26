@@ -53,12 +53,12 @@ func createHandler(c echo.Context) error {
 	return c.JSONBlob(http.StatusOK, ac.Buffer.Bytes())
 }
 
-func checkerHandler(c echo.Context) error {
-	return c.Render(http.StatusOK, "checker.html", nil)
+func csrCheckerHandler(c echo.Context) error {
+	return c.Render(http.StatusOK, "csr-checker.html", nil)
 }
 
-func doCheckHandler(c echo.Context) error {
-	data := &Decoder{}
+func doCsrCheckHandler(c echo.Context) error {
+	data := &CsrDecoder{}
 	if err := c.Bind(data); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
@@ -68,14 +68,25 @@ func doCheckHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	csr := &CsrParam{
-		Country:            x.Subject.Country[0],
-		State:              x.Subject.Province[0],
-		Locality:           x.Subject.Locality[0],
-		OrganizationalName: x.Subject.Organization[0],
-		OrganizationalUnit: x.Subject.OrganizationalUnit[0],
-		CommonName:         x.Subject.CommonName,
+	csr := NewCsrParamFromPkixName(&x.Subject)
+	return c.JSON(http.StatusOK, csr)
+}
+
+func sslCheckerHandler(c echo.Context) error {
+	return c.Render(http.StatusOK, "ssl-checker.html", nil)
+}
+
+func doSslCheckHandler(c echo.Context) error {
+	data := &SslDecoder{}
+	if err := c.Bind(data); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, csr)
+	x, err := data.Decode()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	cert := NewCertificate(x)
+	return c.JSON(http.StatusOK, cert)
 }
