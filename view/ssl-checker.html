@@ -5,10 +5,9 @@
   <title>Certificate Checker</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-    crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+  <script src="/assets/js/vue.js"></script>
+  <script src="/assets/js/axios.min.js"></script>
 </head>
 
 <body>
@@ -97,7 +96,7 @@
               <div class="col-sm-8" v-text="certificate.notAfter"></div>
             </div>
           </div>
-		
+
           <div class="card-body">
             <p class="card-title">Issue</p>
             <div class="form-group row">
@@ -115,7 +114,7 @@
               <div class="col-sm-8" v-text="certificate.issuer.commonName"></div>
             </div>
           </div>
-		
+
         </div>
       </div>
     </div>

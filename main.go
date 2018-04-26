@@ -40,6 +40,8 @@ func newApp() {
 	g2 := e.Group("/ssl")
 	g2.GET("/checker", sslCheckerHandler)
 	g2.POST("/checker", doSslCheckHandler)
+
+	e.Static("/assets", "assets")
 }
 
 func main() {
