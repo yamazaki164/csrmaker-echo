@@ -6,7 +6,7 @@ import (
 )
 
 type Certificate struct {
-	Issue     *Issue   `json:"issue"`
+	Issuer    *Issuer  `json:"issuer"`
 	Subject   *Subject `json:"subject"`
 	NotAfter  string   `json:"notAfter"`
 	NotBefore string   `json:"notBefore"`
@@ -14,7 +14,7 @@ type Certificate struct {
 
 func NewCertificate(cert *x509.Certificate) *Certificate {
 	certificate := &Certificate{
-		Issue:     NewIssueFromPkixName(&cert.Issuer),
+		Issuer:    NewIssuerFromPkixName(&cert.Issuer),
 		Subject:   NewSubjectFromPkixName(&cert.Subject),
 		NotAfter:  cert.NotAfter.String(),
 		NotBefore: cert.NotBefore.String(),
@@ -23,20 +23,20 @@ func NewCertificate(cert *x509.Certificate) *Certificate {
 	return certificate
 }
 
-type Issue struct {
+type Issuer struct {
 	Country            string `json:"country"`
 	OrganizationalName string `json:"organizationalName"`
 	CommonName         string `json:"commonName"`
 }
 
-func NewIssueFromPkixName(x *pkix.Name) *Issue {
-	issue := &Issue{
+func NewIssuerFromPkixName(x *pkix.Name) *Issuer {
+	issuer := &Issuer{
 		Country:            x.Country[0],
 		OrganizationalName: x.Organization[0],
 		CommonName:         x.CommonName,
 	}
 
-	return issue
+	return issuer
 }
 
 type Subject struct {

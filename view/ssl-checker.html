@@ -102,17 +102,17 @@
             <p class="card-title">Issue</p>
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">Country (国名)</label>
-              <div class="col-sm-8" v-text="certificate.issue.country"></div>
+              <div class="col-sm-8" v-text="certificate.issuer.country"></div>
             </div>
 
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">OrganizationalName (組織名)</label>
-              <div class="col-sm-8" v-text="certificate.issue.organizationalName"></div>
+              <div class="col-sm-8" v-text="certificate.issuer.organizationalName"></div>
             </div>
 
             <div class="form-group row">
               <label class="col-sm-4 col-form-label">CommonName (コモンネーム)</label>
-              <div class="col-sm-8" v-text="certificate.issue.commonName"></div>
+              <div class="col-sm-8" v-text="certificate.issuer.commonName"></div>
             </div>
           </div>
 		
@@ -127,7 +127,7 @@
         certificate: "",
       },
       certificate: {
-        issue: {
+        issuer: {
           country: "",
           organizationalName: "",
           commonName: ""
@@ -150,7 +150,7 @@
         certificate: "",
       },
       certificate: {
-        issue: {
+        issuer: {
           country: "",
           organizationalName: "",
           organizationalUnit: "",
