@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  name = "github.com/BurntSushi/toml"
-  packages = ["."]
-  revision = "b26d9c308763d68093482582cea63d69be07a0f0"
-  version = "v0.3.0"
-
-[[projects]]
   name = "github.com/labstack/echo"
   packages = ["."]
   revision = "a5d81b8d4a627f3f49dcb3164ef2bb5239682227"
@@ -64,6 +58,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d38304280849eca87fcb952eda7ceae3a093ea5e14110d63f45dcfa4525a1f0e"
+  inputs-digest = "e81cc2cb20c5749b79cb0f42cab35f3eb61055f07d7352d99b06b146175242d4"
   solver-name = "gps-cdcl"
   solver-version = 1
