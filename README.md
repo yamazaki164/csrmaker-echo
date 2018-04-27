@@ -8,6 +8,7 @@ The CSR generator and decoder.
 ## Description
 - CSR generator
 - CSR decoder
+- Certificate decoder
   
 
 ## Requirement
