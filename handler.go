@@ -6,16 +6,16 @@ import (
 	"github.com/labstack/echo"
 )
 
-func indexHandler(c echo.Context) error {
-	keyBits := KeyBit
-	encryptCbcs := EncryptCbc
+//func indexHandler(c echo.Context) error {
+//	keyBits := KeyBit
+//	encryptCbcs := EncryptCbc
 
-	data := map[string]interface{}{
-		"keyBits":     keyBits,
-		"encryptCbcs": encryptCbcs,
-	}
-	return c.Render(http.StatusOK, "index.html", data)
-}
+//	data := map[string]interface{}{
+//		"keyBits":     keyBits,
+//		"encryptCbcs": encryptCbcs,
+//	}
+//	return c.Render(http.StatusOK, "index.html", data)
+//}
 
 func createHandler(c echo.Context) error {
 	csr := &CsrParam{}
@@ -53,9 +53,9 @@ func createHandler(c echo.Context) error {
 	return c.JSONBlob(http.StatusOK, ac.Buffer.Bytes())
 }
 
-func csrCheckerHandler(c echo.Context) error {
-	return c.Render(http.StatusOK, "csr-checker.html", nil)
-}
+//func csrCheckerHandler(c echo.Context) error {
+//	return c.Render(http.StatusOK, "csr-checker.html", nil)
+//}
 
 func doCsrCheckHandler(c echo.Context) error {
 	data := &CsrDecoder{}
@@ -72,9 +72,9 @@ func doCsrCheckHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, csr)
 }
 
-func sslCheckerHandler(c echo.Context) error {
-	return c.Render(http.StatusOK, "ssl-checker.html", nil)
-}
+//func sslCheckerHandler(c echo.Context) error {
+//	return c.Render(http.StatusOK, "ssl-checker.html", nil)
+//}
 
 func doSslCheckHandler(c echo.Context) error {
 	data := &SslDecoder{}

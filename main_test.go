@@ -12,7 +12,4 @@ func TestNewApp(t *testing.T) {
 	if e == nil {
 		t.Error("call newApp. but variable e was not initialzed.")
 	}
-	if e.Renderer == nil {
-		t.Error("renderer was not initialized.")
-	}
 }

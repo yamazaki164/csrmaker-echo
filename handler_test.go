@@ -10,19 +10,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-func TestIndexHandler(t *testing.T) {
-	e := echo.New()
-	req := httptest.NewRequest(echo.GET, "/", nil)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/")
-
-	indexHandler(c)
-	if rec.Result().StatusCode != http.StatusOK {
-		t.Error("indexHandler: bad status code")
-	}
-}
-
 func TestCreateHandlerWithEmptyParam(t *testing.T) {
 	e := echo.New()
 	req1 := httptest.NewRequest(echo.POST, "/create", nil)
@@ -92,16 +79,6 @@ func TestCreateHandlerWithValidParam(t *testing.T) {
 	}
 }
 
-func TestCsrCheckerHandler(t *testing.T) {
-	e := echo.New()
-	req := httptest.NewRequest(echo.GET, "/csr/checker", nil)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/csr-checker")
-
-	csrCheckerHandler(c)
-}
-
 func TestDoCsrCheckHandlerWithEmptyParam(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(echo.POST, "/csr/checker", nil)
@@ -165,16 +142,6 @@ CDrKx9V2DqJC
 	if rec.Result().StatusCode != http.StatusOK {
 		t.Error("doCsrCheckHandler: bad status code on valid params")
 	}
-}
-
-func TestSslCheckerHandler(t *testing.T) {
-	e := echo.New()
-	req := httptest.NewRequest(echo.GET, "/ssl/checker", nil)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/ssl-checker")
-
-	sslCheckerHandler(c)
 }
 
 func TestDoSslCheckHandlerWithEmptyParam(t *testing.T) {

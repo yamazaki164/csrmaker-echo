@@ -19,10 +19,10 @@
           <a class="nav-link active" href="#">Generator</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/csr/checker">CSR Checker</a>
+          <a class="nav-link" href="/csr/checker.html">CSR Checker</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/ssl/checker">Certificate Checker</a>
+          <a class="nav-link" href="/ssl/checker.html">Certificate Checker</a>
         </li>
       </ul>
     </nav>
@@ -38,9 +38,11 @@
               <label class="col-sm-3 col-form-label">EncryptCbc (CBCモード)*</label>
               <div class="col-sm-9">
                 <select class="form-control" required name="encrypt_cbc" v-model="form.encryptCbc">
-                  {{ range .encryptCbcs }}
-                  <option value="{{.}}">{{.}}</option>
-                  {{ end }}
+                  <option value="none">none</option>
+                  <option value="aes128">aes128</option>
+                  <option value="aes192">aes192</option>
+                  <option value="aes256">aes256</option>
+                  <option value="des3">des3</option>
                 </select>
                 <span class="text-danger" v-text="error.encryptCbc"></span>
               </div>
@@ -50,9 +52,8 @@
               <label class="col-sm-3 col-form-label">KeyBit (キー長)*</label>
               <div class="col-sm-9">
                 <select class="form-control" required name="key_bit" v-model.number="form.keyBit">
-                  {{ range .keyBits }}
-                  <option value="{{.}}">{{.}}</option>
-                  {{ end }}
+                  <option value="2048">2048</option>
+                  <option value="4096">4096</option>
                 </select>
                 <span class="text-danger" v-text="error.keyBit"></span>
               </div>
