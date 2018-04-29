@@ -205,7 +205,7 @@
           var postData = this.form
           axios({
             method: 'post',
-            url: '/create',
+            url: '/api/create',
             data: this.form,
             responseType: 'arraybuffer'
           })
@@ -221,7 +221,7 @@
               a.click()
             })
             .catch(function (error) {
-              if (error.response.status == 400) {
+              if (error.response.status === 400) {
                 var e = JSON.parse(new TextDecoder().decode(error.response.data))
                 this.data.error = e
               }

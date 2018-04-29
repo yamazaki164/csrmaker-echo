@@ -8,9 +8,10 @@ var e *echo.Echo
 
 func newApp() {
 	e = echo.New()
-	e.POST("/create", createHandler)
-	e.POST("/csr/checker", doCsrCheckHandler)
-	e.POST("/ssl/checker", doSslCheckHandler)
+	g := e.Group("/api")
+	g.POST("/create", createHandler)
+	g.POST("/csr/checker", doCsrCheckHandler)
+	g.POST("/ssl/checker", doSslCheckHandler)
 
 	e.Static("/", "public")
 }

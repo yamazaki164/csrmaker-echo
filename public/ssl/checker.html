@@ -181,14 +181,14 @@
           var postData = this.form
           axios({
             method: 'post',
-            url: '/ssl/checker',
+            url: '/api/ssl/checker',
             data: postData
           })
             .then(function (response) {
               this.data.certificate = response.data
             })
             .catch(function (error) {
-              if (error.response.status == 400) {
+              if (error.response.status === 400) {
                 this.data.error = error.response.data.error
               }
             })

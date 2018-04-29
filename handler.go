@@ -6,21 +6,10 @@ import (
 	"github.com/labstack/echo"
 )
 
-//func indexHandler(c echo.Context) error {
-//	keyBits := KeyBit
-//	encryptCbcs := EncryptCbc
-
-//	data := map[string]interface{}{
-//		"keyBits":     keyBits,
-//		"encryptCbcs": encryptCbcs,
-//	}
-//	return c.Render(http.StatusOK, "index.html", data)
-//}
-
 func createHandler(c echo.Context) error {
 	csr := &CsrParam{}
 	if err := c.Bind(csr); err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		return c.JSON(http.StatusBadRequest, NewErrorParam(err))
 	}
 
 	//validation
@@ -35,11 +24,11 @@ func createHandler(c echo.Context) error {
 	}
 	KeyRaw, err := s.GeneratePrivateKey()
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return c.JSON(http.StatusInternalServerError, NewErrorParam(err))
 	}
 	CsrRaw, err := s.GenerateCsr()
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return c.JSON(http.StatusInternalServerError, NewErrorParam(err))
 	}
 
 	files := map[string][]byte{
@@ -53,38 +42,30 @@ func createHandler(c echo.Context) error {
 	return c.JSONBlob(http.StatusOK, ac.Buffer.Bytes())
 }
 
-//func csrCheckerHandler(c echo.Context) error {
-//	return c.Render(http.StatusOK, "csr-checker.html", nil)
-//}
-
 func doCsrCheckHandler(c echo.Context) error {
 	data := &CsrDecoder{}
 	if err := c.Bind(data); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return c.JSON(http.StatusBadRequest, NewErrorParam(err))
 	}
 
 	x, err := data.Decode()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return c.JSON(http.StatusBadRequest, NewErrorParam(err))
 	}
 
 	csr := NewCsrParamFromPkixName(&x.Subject)
 	return c.JSON(http.StatusOK, csr)
 }
 
-//func sslCheckerHandler(c echo.Context) error {
-//	return c.Render(http.StatusOK, "ssl-checker.html", nil)
-//}
-
 func doSslCheckHandler(c echo.Context) error {
 	data := &SslDecoder{}
 	if err := c.Bind(data); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return c.JSON(http.StatusBadRequest, NewErrorParam(err))
 	}
 
 	x, err := data.Decode()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return c.JSON(http.StatusBadRequest, NewErrorParam(err))
 	}
 
 	cert := NewCertificate(x)

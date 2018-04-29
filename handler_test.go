@@ -12,10 +12,10 @@ import (
 
 func TestCreateHandlerWithEmptyParam(t *testing.T) {
 	e := echo.New()
-	req1 := httptest.NewRequest(echo.POST, "/create", nil)
+	req1 := httptest.NewRequest(echo.POST, "/api/create", nil)
 	rec1 := httptest.NewRecorder()
 	c1 := e.NewContext(req1, rec1)
-	c1.SetPath("/create")
+	c1.SetPath("/api/create")
 
 	createHandler(c1)
 	if rec1.Result().StatusCode != http.StatusBadRequest {
@@ -36,12 +36,12 @@ func TestCreateHandlerWithInvalidParam(t *testing.T) {
 	param.Set("organizationalUnit", "")
 	param.Set("commonName", "")
 
-	req := httptest.NewRequest(echo.POST, "/create", strings.NewReader(param.Encode()))
+	req := httptest.NewRequest(echo.POST, "/api/create", strings.NewReader(param.Encode()))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/create")
+	c.SetPath("/api/create")
 	err := createHandler(c)
 	if err != nil {
 		t.Error("createHandler: createHandler return value error")
@@ -64,12 +64,12 @@ func TestCreateHandlerWithValidParam(t *testing.T) {
 	param.Set("organizationalUnit", "test")
 	param.Set("commonName", "test.example.com")
 
-	req := httptest.NewRequest(echo.POST, "/create", strings.NewReader(param.Encode()))
+	req := httptest.NewRequest(echo.POST, "/api/create", strings.NewReader(param.Encode()))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/create")
+	c.SetPath("/api/create")
 	err := createHandler(c)
 	if err != nil {
 		t.Error("createHandler: createHandler return value error")
@@ -81,10 +81,10 @@ func TestCreateHandlerWithValidParam(t *testing.T) {
 
 func TestDoCsrCheckHandlerWithEmptyParam(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(echo.POST, "/csr/checker", nil)
+	req := httptest.NewRequest(echo.POST, "/api/csr/checker", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/csr/checker")
+	c.SetPath("/api/csr/checker")
 
 	doCsrCheckHandler(c)
 	if rec.Result().StatusCode != http.StatusBadRequest {
@@ -97,12 +97,12 @@ func TestDoCsrCheckHandlerWithInvalidParam(t *testing.T) {
 	param := make(url.Values)
 	param.Set("csr", "abc")
 
-	req := httptest.NewRequest(echo.POST, "/csr/checker", strings.NewReader(param.Encode()))
+	req := httptest.NewRequest(echo.POST, "/api/csr/checker", strings.NewReader(param.Encode()))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/csr/checker")
+	c.SetPath("/api/csr/checker")
 
 	doCsrCheckHandler(c)
 	if rec.Result().StatusCode != http.StatusBadRequest {
@@ -131,12 +131,12 @@ STNvqhZTfhd9osOl4SXd+dF3/g2mrvTSM0y/iSEtfK8cQbXA3shOsPSu36ARJB9v
 CDrKx9V2DqJC
 -----END CERTIFICATE REQUEST-----`)
 
-	req := httptest.NewRequest(echo.POST, "/csr/checker", strings.NewReader(param.Encode()))
+	req := httptest.NewRequest(echo.POST, "/api/csr/checker", strings.NewReader(param.Encode()))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/csr/checker")
+	c.SetPath("/api/csr/checker")
 
 	doCsrCheckHandler(c)
 	if rec.Result().StatusCode != http.StatusOK {
@@ -146,10 +146,10 @@ CDrKx9V2DqJC
 
 func TestDoSslCheckHandlerWithEmptyParam(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(echo.POST, "/ssl/checker", nil)
+	req := httptest.NewRequest(echo.POST, "/api/ssl/checker", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/ssl/checker")
+	c.SetPath("/api/ssl/checker")
 
 	doSslCheckHandler(c)
 	if rec.Result().StatusCode != http.StatusBadRequest {
@@ -162,12 +162,12 @@ func TestDoSslCheckHandlerWithInvalidParam(t *testing.T) {
 	param := make(url.Values)
 	param.Set("certificate", "abc")
 
-	req := httptest.NewRequest(echo.POST, "/ssl/checker", strings.NewReader(param.Encode()))
+	req := httptest.NewRequest(echo.POST, "/api/ssl/checker", strings.NewReader(param.Encode()))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/ssl/checker")
+	c.SetPath("/api/ssl/checker")
 
 	doSslCheckHandler(c)
 	if rec.Result().StatusCode != http.StatusBadRequest {
@@ -200,12 +200,12 @@ jN6pHmvDGiyDfJmCwykgiee+PPPYZYCo2xqmFd7wKGhtKuHw93ToaLTvxe3yDJla
 aVeHNwXryBZyN3AXOP8=
 -----END CERTIFICATE-----`)
 
-	req := httptest.NewRequest(echo.POST, "/ssl/checker", strings.NewReader(param.Encode()))
+	req := httptest.NewRequest(echo.POST, "/api/ssl/checker", strings.NewReader(param.Encode()))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	c.SetPath("/ssl/checker")
+	c.SetPath("/api/ssl/checker")
 
 	doSslCheckHandler(c)
 	if rec.Result().StatusCode != http.StatusOK {
