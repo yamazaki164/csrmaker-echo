@@ -1,9 +1,9 @@
+# csrmaker-echo
+
 [![CircleCI](https://circleci.com/gh/yamazaki164/csrmaker-echo/tree/master.svg?style=svg)](https://circleci.com/gh/yamazaki164/csrmaker-echo/tree/master)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-csrmaker-echo
-====
-
-The CSR generator and decoder.
+The CSR generator, CSR decoder and certificate decoder.
 
 ## Description
 - CSR generator

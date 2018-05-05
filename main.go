@@ -2,12 +2,16 @@ package main
 
 import (
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 var e *echo.Echo
 
 func newApp() {
 	e = echo.New()
+	e.Use(middleware.Secure())
+	e.Use(middleware.Gzip())
+
 	g := e.Group("/api")
 	g.POST("/create", createHandler)
 	g.POST("/csr/checker", doCsrCheckHandler)
