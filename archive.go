@@ -3,6 +3,7 @@ package main
 import (
 	"archive/zip"
 	"bytes"
+	"errors"
 )
 
 type Archive struct {
@@ -19,15 +20,21 @@ func NewArchive(targets map[string][]byte) *Archive {
 	return archive
 }
 
-func (a *Archive) Compress() {
+func (a *Archive) Compress() error {
+	if a.Buffer == nil {
+		return errors.New("Buffer nil pointer error")
+	}
+
 	zw := zip.NewWriter(a.Buffer)
 	for k, v := range a.targets {
 		f, e := zw.Create(k)
 		if e != nil {
-			panic(e)
+			return e
 		}
-		f.Write(v)
+		if _, e := f.Write(v); e != nil {
+			return e
+		}
 	}
 
-	zw.Close()
+	return zw.Close()
 }

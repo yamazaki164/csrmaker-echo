@@ -37,7 +37,9 @@ func createHandler(c echo.Context) error {
 		"pass.txt": []byte(pass),
 	}
 	ac := NewArchive(files)
-	ac.Compress()
+	if err := ac.Compress(); err != nil {
+		return c.JSON(http.StatusInternalServerError, NewErrorParam(err))
+	}
 
 	return c.JSONBlob(http.StatusOK, ac.Buffer.Bytes())
 }

@@ -30,12 +30,16 @@ type Issuer struct {
 }
 
 func NewIssuerFromPkixName(x *pkix.Name) *Issuer {
-	issuer := &Issuer{
-		Country:            x.Country[0],
-		OrganizationalName: x.Organization[0],
-		CommonName:         x.CommonName,
+	issuer := &Issuer{}
+	if x != nil {
+		if len(x.Country) > 0 {
+			issuer.Country = x.Country[0]
+		}
+		if len(x.Organization) > 0 {
+			issuer.OrganizationalName = x.Organization[0]
+		}
+		issuer.CommonName = x.CommonName
 	}
-
 	return issuer
 }
 
@@ -49,14 +53,24 @@ type Subject struct {
 }
 
 func NewSubjectFromPkixName(x *pkix.Name) *Subject {
-	subject := &Subject{
-		Country:            x.Country[0],
-		State:              x.Province[0],
-		Locality:           x.Locality[0],
-		OrganizationalName: x.Organization[0],
-		OrganizationalUnit: x.OrganizationalUnit[0],
-		CommonName:         x.CommonName,
+	subject := &Subject{}
+	if x != nil {
+		if len(x.Country) > 0 {
+			subject.Country = x.Country[0]
+		}
+		if len(x.Province) > 0 {
+			subject.State = x.Province[0]
+		}
+		if len(x.Locality) > 0 {
+			subject.Locality = x.Locality[0]
+		}
+		if len(x.Organization) > 0 {
+			subject.OrganizationalName = x.Organization[0]
+		}
+		if len(x.OrganizationalUnit) > 0 {
+			subject.OrganizationalUnit = x.OrganizationalUnit[0]
+		}
+		subject.CommonName = x.CommonName
 	}
-
 	return subject
 }
