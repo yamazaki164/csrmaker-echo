@@ -80,6 +80,13 @@ func TestGeneratePrivateKey(t *testing.T) {
 	if err6 == nil {
 		t.Error("KeyBit is invalid")
 	}
+
+	ssl.Csr.KeyBit = 2048
+	ssl.Csr.EncryptCbc = "none"
+	_, err7 := ssl.GeneratePrivateKey()
+	if err7 != nil {
+		t.Error("EnctypeCbc is none, but return value is not nil.")
+	}
 }
 
 func TestGenerateCsr(t *testing.T) {
